@@ -1,38 +1,40 @@
-import { RefObject, useCallback, useEffect } from 'react';
+import { RefObject, useEffect } from 'react';
+import {
+  FieldValues,
+  KeepStateOptions,
+  Path,
+  UseFormUnregister,
+} from 'react-hook-form';
 
-export const useRHFShouldUnregister = (
-	ref: RefObject<HTMLFormElement>,
-	unregister: any // UseFormUnregister
+const selector = 'input[name], select[name], textarea[name]';
+type Field = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+export const useRHFShouldUnregister = <T extends FieldValues>(
+  formRef: RefObject<HTMLFormElement>,
+  unregister: UseFormUnregister<T>,
+  keepStateOptions: KeepStateOptions
 ) => {
-	const handleShouldUnregister = useCallback(
-		(mutations: MutationRecord[]) =>
-			mutations.forEach(({ removedNodes }) =>
-				removedNodes?.forEach((node) =>
-					// Unregister all removed inputs via their name attrbute
-					(node as HTMLElement)
-						?.querySelectorAll(
-							'input[name], select[name], textarea[name]'
-						)
-						?.forEach((input) => {
-							const name = (input as
-								| HTMLInputElement
-								| HTMLSelectElement
-								| HTMLTextAreaElement).name;
-							unregister(name);
-						})
-				)
-			),
-		[unregister]
-	);
+  useEffect(() => {
+    if (!formRef.current) return;
+    const handleUnregister = (node: Element) =>
+      unregister((node as Field).name as Path<T>, keepStateOptions);
 
-	useEffect(() => {
-		if (!ref.current) return;
+    const observer = new MutationObserver((mutations: MutationRecord[]) =>
+      mutations.forEach(({ removedNodes }) =>
+        removedNodes?.forEach((removedNode) => {
+          if (!(removedNode instanceof Element)) return;
 
-		// Watch all DOM changes that occur within the form
-		const observer = new MutationObserver(handleShouldUnregister);
-		const options = { childList: true, subtree: true };
+          if (removedNode.hasChildNodes()) {
+            // All matching nodes
+            removedNode.querySelectorAll(selector)?.forEach(handleUnregister);
+          } else if (removedNode?.matches(selector)) {
+            handleUnregister(removedNode);
+          }
+        })
+      )
+    );
 
-		observer.observe(ref.current, options);
-		return () => observer.disconnect();
-	}, [ref, handleShouldUnregister]);
+    observer.observe(formRef.current, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [formRef]);
 };
