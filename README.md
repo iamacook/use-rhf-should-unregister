@@ -39,60 +39,60 @@ As an alternative to using `useRHFShouldUnregister`, you can create your own cus
 import { TextField } from '@material-ui/core';
 import { useEffect } from 'react';
 import {
-	FormProvider,
-	useController,
-	useForm,
-	useFormContext,
+  FormProvider,
+  useController,
+  useForm,
+  useFormContext,
 } from 'react-hook-form';
 
 export const ShouldUnregisterInput = ({ name, register, unregister, shouldUnregister = false }) => {
-	useEffect(() => {
-		return () => {
-			if (!shouldUnregister) return;
-			// Unregister input on unmount
-			unregister(name);
-		};
-	}, [shouldUnregister, unregister]);
+  useEffect(() => {
+    return () => {
+      if (!shouldUnregister) return;
+      // Unregister input on unmount
+      unregister(name);
+    };
+  }, [shouldUnregister, unregister]);
 
-	return <input {...register(name)} />;
+  return <input {...register(name)} />;
 };
 
 export const ShouldUnregisterControlledInput = ({ name, shouldUnregister = false }) => {
-	// Unregister can alternatively be passed via FormProvider
-	const { unregister } = useFormContext();
+  // Unregister can alternatively be passed via FormProvider
+  const { unregister } = useFormContext();
 
-	useEffect(() => {
-		return () => {
-			if (!shouldUnregister) return;
-			// Unregister input on unmount
-			unregister(name);
-		};
-	}, [shouldUnregister, unregister]);
+  useEffect(() => {
+    return () => {
+      if (!shouldUnregister) return;
+      // Unregister input on unmount
+      unregister(name);
+    };
+  }, [shouldUnregister, unregister]);
 
-	const {
-		field: { ref, ...inputProps },
-	} = useController({
-		name,
-		defaultValue: '',
-		// { control } comes from FormProvider
-	});
+  const {
+    field: { ref, ...inputProps },
+  } = useController({
+    name,
+    defaultValue: '',
+    // { control } comes from FormProvider
+  });
 
-	return <TextField {...inputProps} inputRef={ref} />;
+  return <TextField {...inputProps} inputRef={ref} />;
 };
 
 const App = () => {
-	const { handleSubmit, register, unregister } = useForm();
+  const { handleSubmit, register, unregister } = useForm();
 
-	const onSubmit = (data) => console.log(data)
+  const onSubmit = (data) => console.log(data)
 
-	return (
-		<form onSubmit={onSubmit}>
-			<FormProvider {...methods}>
-				<ShouldUnregisterInput name='firstName' shouldUnregister register={register}  unregister={unregister} />
-				<ShouldUnregisterControlledInput name='lastName' shouldUnregister />
-			<FormProvider>
-		</form>
-	);
+  return (
+    <form onSubmit={onSubmit}>
+      <FormProvider {...methods}>
+      <ShouldUnregisterInput name='firstName' shouldUnregister register={register}  unregister={unregister} />
+      <ShouldUnregisterControlledInput name='lastName' shouldUnregister />
+      <FormProvider>
+    </form>
+  );
 };
 
 export default App;
