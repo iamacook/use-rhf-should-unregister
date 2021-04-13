@@ -2,6 +2,8 @@
 
 `useRHFShouldUnregister` is a polyfill for the deprecated `shouldUnregister` option in [React Hook Form](https://react-hook-form.com/) v7. It automatically unregisters unmounted fields. It takes a form `ref`, `unregister` and the optional 'keep state' [options object](https://react-hook-form.com/api/useform/unregister) that is applied to all unmounted fields.
 
+It is important that the fields that should unregister be provided their default values via the `defaultValue`/`defaultChecked` prop instead of via `useForm`.
+
 ## Installation
 
 `npm install use-rhf-should-unregister`
@@ -54,7 +56,10 @@ const App = () => {
       {hasPet && (
         <>
           <label htmlFor='petName'>Pet name</label>
-          <input {...register('petName', { required: true })} />
+          <input
+            {...register('petName', { required: true })}
+            defaultValue='Max'
+          />
         </>
       )}
 
@@ -86,6 +91,7 @@ export const ShouldUnregisterInput = ({
   unregister,
   shouldUnregister = false,
   keepStateOptions = {},
+  defaultValue,
 }) => {
   useEffect(() => {
     return () => {
@@ -95,15 +101,15 @@ export const ShouldUnregisterInput = ({
     };
   }, [shouldUnregister, unregister]);
 
-  return <input {...register(name)} />;
+  return <input {...register(name)} defaultValue={defaultValue} />;
 };
 
 export const ShouldUnregisterControlledInput = ({
   name,
   shouldUnregister = false,
   keepStateOptions = {},
+  defaultValue,
 }) => {
-  // Unregister can alternatively be passed via FormProvider
   const { unregister } = useFormContext();
 
   useEffect(() => {
@@ -118,11 +124,12 @@ export const ShouldUnregisterControlledInput = ({
     field: { ref, ...inputProps },
   } = useController({
     name,
-    defaultValue: '',
-    // { control } comes from FormProvider
+    // defaultValue should be sent instead via props
   });
 
-  return <TextField inputRef={ref} {...inputProps} />;
+  return (
+    <TextField inputRef={ref} {...inputProps} defaultValue={defaultValue} />
+  );
 };
 
 const App = () => {
@@ -135,6 +142,7 @@ const App = () => {
       <FormProvider {...methods}>
         <ShouldUnregisterInput
           name='firstName'
+          defaultValue='Aaron'
           shouldUnregister
           register={register}
           unregister={unregister}
@@ -142,6 +150,7 @@ const App = () => {
         />
         <ShouldUnregisterControlledInput
           name='lastName'
+          defaultValue='Cook'
           shouldUnregister
           keepStateOptions={{ keepDirty: true }}
         />

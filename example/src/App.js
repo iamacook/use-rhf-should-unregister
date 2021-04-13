@@ -9,7 +9,6 @@ const App = () => {
       firstName: 'Aaron',
       lastName: 'Cook',
       hasPet: false,
-      petName: { name: '' },
     },
   });
 
@@ -33,7 +32,10 @@ const App = () => {
       {hasPet && (
         <>
           <label htmlFor='petName'>Pet name</label>
-          <input {...register('petName', { required: true })} />
+          <input
+            {...register('petName', { required: true })}
+            defaultValue='Max'
+          />
         </>
       )}
 
