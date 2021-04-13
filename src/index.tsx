@@ -6,26 +6,6 @@ import {
   UseFormUnregister,
 } from 'react-hook-form';
 
-// export const flatten = <T extends Record<string, any>>(
-//   object: T,
-//   path: string | null = null
-// ) =>
-//   Object.entries(object).reduce((acc: T, [key, value]: [string, any]): T => {
-//     const newPath = [path, key].filter(Boolean).join('.');
-
-//     const isObject = [
-//       typeof value === 'object',
-//       value !== null,
-//       !(value instanceof Date),
-//       !(value instanceof RegExp),
-//       !(Array.isArray(value) && value.length === 0),
-//     ].every(Boolean);
-
-//     return isObject
-//       ? { ...acc, ...flatten(value, newPath) }
-//       : { ...acc, [newPath]: value };
-//   }, {} as T);
-
 const selector = 'input[name], select[name], textarea[name]';
 type Field = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
