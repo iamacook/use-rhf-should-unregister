@@ -1,36 +1,99 @@
-# use-rhf-should-unregister
+# `useRHFShouldUnregister()`
 
-> shouldUnregister polyfill for React Hook Form v7
+`useRHFShouldUnregister` is a polyfill for the deprecated `shouldUnregister` option in [React Hook Form](https://react-hook-form.com/) v7. It automatically unregisters unmounted inputs. It takes two arguments, a form `ref` and `unregister`.
 
-[![NPM](https://img.shields.io/npm/v/use-rhf-should-unregister.svg)](https://www.npmjs.com/package/use-rhf-should-unregister) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+## Installation
 
-## Install
-
-```bash
-npm install --save use-rhf-should-unregister
-```
+`npm install use-rhf-should-unregister`
 
 ## Usage
 
-```tsx
-import * as React from 'react'
+```jsx
+import { useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { useRHFShouldUnregister } from 'use-rhf-should-unregister';
 
-import { useMyHook } from 'use-rhf-should-unregister'
+const App = () => {
+	const formRef = useRef(null);
+	const { handleSubmit, unregister } = useForm();
 
-const Example = () => {
-  const example = useMyHook()
-  return (
-    <div>
-      {example}
-    </div>
-  )
-}
+	useRHFShouldUnregister(formRef, unregister);
+
+	const onSubmit = (data) => console.log(data);
+
+	return (
+		<form onSubmit={onSubmit} ref={formRef}>
+			{/* ... */}
+		</form>
+	);
+};
+
+export default App;
 ```
 
-## License
+## Alternatives
 
-MIT © [iamacook](https://github.com/iamacook)
+As an alternative to using `useRHFShouldUnregister`, you can create your own custom input component that calls `unregister` in the `useEffect` cleanup.
 
----
+```jsx
+import { TextField } from '@material-ui/core';
+import { useEffect } from 'react';
+import {
+	FormProvider,
+	useController,
+	useForm,
+	useFormContext,
+} from 'react-hook-form';
 
-This hook is created using [create-react-hook](https://github.com/hermanya/create-react-hook).
+export const ShouldUnregisterInput = ({ name, register, unregister, shouldUnregister = false }) => {
+	useEffect(() => {
+		return () => {
+			if (!shouldUnregister) return;
+			// Unregister input on unmount
+			unregister(name);
+		};
+	}, [shouldUnregister, unregister]);
+
+	return <input {...register(name)} />;
+};
+
+export const ShouldUnregisterControlledInput = ({ name, shouldUnregister = false }) => {
+	// Unregister can alternatively be passed via FormProvider
+	const { unregister } = useFormContext();
+
+	useEffect(() => {
+		return () => {
+			if (!shouldUnregister) return;
+			// Unregister input on unmount
+			unregister(name);
+		};
+	}, [shouldUnregister, unregister]);
+
+	const {
+		field: { ref, ...inputProps },
+	} = useController({
+		name,
+		defaultValue: '',
+		// { control } comes from FormProvider
+	});
+
+	return <TextField {...inputProps} inputRef={ref} />;
+};
+
+const App = () => {
+	const { handleSubmit, register, unregister } = useForm();
+
+	const onSubmit = (data) => console.log(data)
+
+	return (
+		<form onSubmit={onSubmit}>
+			<FormProvider {...methods}>
+				<ShouldUnregisterInput name='firstName' shouldUnregister register={register}  unregister={unregister} />
+				<ShouldUnregisterControlledInput name='lastName' shouldUnregister />
+			<FormProvider>
+		</form>
+	);
+};
+
+export default App;
+```

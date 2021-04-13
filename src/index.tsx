@@ -1,13 +1,13 @@
-import { useCallback, useEffect } from 'react';
+import { RefObject, useCallback, useEffect } from 'react';
 
 export const useRHFShouldUnregister = (
-	ref: React.RefObject<HTMLFormElement>,
+	ref: RefObject<HTMLFormElement>,
 	unregister: any // UseFormUnregister
 ) => {
 	const handleShouldUnregister = useCallback(
 		(mutations: MutationRecord[]) =>
 			mutations.forEach(({ removedNodes }) =>
-				removedNodes?.forEach((node) => {
+				removedNodes?.forEach((node) =>
 					// Unregister all removed inputs via their name attrbute
 					(node as HTMLElement)
 						?.querySelectorAll(
@@ -19,8 +19,8 @@ export const useRHFShouldUnregister = (
 								| HTMLSelectElement
 								| HTMLTextAreaElement).name;
 							unregister(name);
-						});
-				})
+						})
+				)
 			),
 		[unregister]
 	);
