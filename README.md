@@ -29,7 +29,6 @@ const App = () => {
       firstName: 'Aaron',
       lastName: 'Cook',
       hasPet: false,
-      petName: '',
     },
   });
 
