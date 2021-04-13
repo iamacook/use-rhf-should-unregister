@@ -14,18 +14,18 @@ import { useForm } from 'react-hook-form';
 import { useRHFShouldUnregister } from 'use-rhf-should-unregister';
 
 const App = () => {
-	const formRef = useRef(null);
-	const { handleSubmit, unregister } = useForm();
+  const formRef = useRef(null);
+  const { handleSubmit, unregister } = useForm();
 
-	useRHFShouldUnregister(formRef, unregister);
+  useRHFShouldUnregister(formRef, unregister);
 
-	const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => console.log(data);
 
-	return (
-		<form onSubmit={onSubmit} ref={formRef}>
-			{/* ... */}
-		</form>
-	);
+  return (
+    <form onSubmit={onSubmit} ref={formRef}>
+	  {/* ... */}
+	</form>
+  );
 };
 
 export default App;
