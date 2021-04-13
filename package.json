@@ -1,6 +1,6 @@
 {
   "name": "use-rhf-should-unregister",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "shouldUnregister polyfill for React Hook Form v7",
   "author": "iamacook",
   "license": "MIT",
