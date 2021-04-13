@@ -23,8 +23,8 @@ const App = () => {
 
   return (
     <form onSubmit={onSubmit} ref={formRef}>
-	  {/* ... */}
-	</form>
+      {/* ... */}
+    </form>
   );
 };
 
