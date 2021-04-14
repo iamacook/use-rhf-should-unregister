@@ -20,22 +20,19 @@ export const useRHFShouldUnregister = <T extends FieldValues>(
     const handleUnregister = (node: Element) =>
       unregister((node as Field).name as Path<T>, keepStateOptions);
 
-    const observer = new MutationObserver(
-      (mutations: MutationRecord[], x: any) => {
-        console.log(x);
-        mutations.forEach(({ removedNodes }) =>
-          removedNodes?.forEach((removedNode) => {
-            if (!(removedNode instanceof Element)) return;
+    const observer = new MutationObserver((mutations: MutationRecord[]) =>
+      mutations.forEach(({ removedNodes }) =>
+        removedNodes?.forEach((removedNode) => {
+          if (!(removedNode instanceof Element)) return;
 
-            if (removedNode.hasChildNodes()) {
-              // All matching nodes
-              removedNode.querySelectorAll(selector)?.forEach(handleUnregister);
-            } else if (removedNode?.matches(selector)) {
-              handleUnregister(removedNode);
-            }
-          })
-        );
-      }
+          if (removedNode.hasChildNodes()) {
+            // All matching nodes
+            removedNode.querySelectorAll(selector)?.forEach(handleUnregister);
+          } else if (removedNode?.matches(selector)) {
+            handleUnregister(removedNode);
+          }
+        })
+      )
     );
 
     observer.observe(formRef.current, { childList: true, subtree: true });
