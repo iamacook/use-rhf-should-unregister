@@ -1,8 +1,10 @@
 # `useRHFShouldUnregister()`
 
-`useRHFShouldUnregister` is a polyfill for the deprecated `shouldUnregister` option in [React Hook Form](https://react-hook-form.com/) v7. It automatically unregisters unmounted fields. It takes a form `ref`, `unregister` and the optional 'keep state' [options object](https://react-hook-form.com/api/useform/unregister) that is applied to all unmounted fields.
+**Deprecated**: This feature has been re-implemented in React Hook Form from v7.2.0 upwards.
 
-It is important that the fields that should unregister be provided their default values via the `defaultValue`/`defaultChecked` prop instead of via `useForm`.
+~~`useRHFShouldUnregister` is a polyfill for the deprecated `shouldUnregister` option in [React Hook Form](https://react-hook-form.com/) v7. It automatically unregisters unmounted fields. It takes a form `ref`, `unregister` and the optional 'keep state' [options object](https://react-hook-form.com/api/useform/unregister) that is applied to all unmounted fields.~~
+
+~~It is important that the fields that should unregister be provided their default values via the `defaultValue`/`defaultChecked` prop instead of via `useForm`.~~
 
 ## Installation
 
